@@ -1,21 +1,13 @@
-#############################################################
-# Project Name: Advanced Analysis
-# Owner: David Cleminson
-# Date: 20/02/2020
-# Assessment: 5
-#############################################################
-
-
 import os.path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
 ###########################################################################
 #   SECONDARY MAIN LINE
 ###########################################################################
 def main():
+
     dataframe = []
     data_loaded = False
     select_options_value = 4
@@ -40,18 +32,16 @@ def main():
             else:
                 display_graph_type_submenu()
                 graph_selection = menu_input_validation(3)
-                subplot_choice = get_graph_logic()
+                subplot_choice = get_graph_logic(dataframe)
                 plot_graphics(graph_selection, subplot_choice, dataframe)
 
         select_option = display_menu(select_options_value)
-
-
 ###########################################################################
 #   Function Name: DISPLAY MENU
 #  function Purpose: This function will be reused for the presentation
 #                    of the main menu
 ###########################################################################
-def display_menu(select_options_value): # ---------------------------------look at calling from main
+def display_menu(select_options_value):
     print('\nWelcome to The DataFrame Statistician!')
     print('Choose one of the following options:')
     print('\t1 - Load from a CSV file')
@@ -63,12 +53,12 @@ def display_menu(select_options_value): # ---------------------------------look 
 
     return select_option
 
-
 ###########################################################################
 #   Function Name: MENU INPUT VALIDATION
 #  function Purpose:This function validates the correct number is entered
 ###########################################################################
 def menu_input_validation(select_option_values):
+
     valid_choice = False
     while not valid_choice:
         try:
@@ -81,13 +71,13 @@ def menu_input_validation(select_option_values):
         except:
             print(f'\tPlease Enter a number from 1 to {select_option_values} ')
 
-
 ###########################################################################
 #   Function Name: DISPLAY RESPONSE
 #  function Purpose: This is a central repository for all errors and
 #                    responses displayed to the users
 ###########################################################################
 def display_response(response_code):
+
     response_dictionary = {100: '\n\t You have entered an invalid number, Please try again:',
                            101: '\n\t Select a dataset to analise: ',
                            102: '\n\t You have not imported a data file yet. Please select option 1:',
@@ -98,13 +88,13 @@ def display_response(response_code):
                            }
     print(response_dictionary[response_code])
 
-
 ###########################################################################
 #   Function Name: VALIDATE FILE NAME
 #  function Purpose: This function validates the file name to make sure
 #                    the name is valid and the file exists.
 ###########################################################################
 def validate_file_name():
+
     user_input = False
 
     while not user_input:
@@ -113,8 +103,8 @@ def validate_file_name():
             display_response(103)
         else:
             print(f"\nThe file '{file_to_load}' was loaded successfully.")
+            user_input = True
             return file_to_load
-
 
 ###########################################################################
 #   Function Name: LOAD DATA FROM FILE
@@ -122,13 +112,14 @@ def validate_file_name():
 #                    into a dataframe
 ###########################################################################
 def load_data_from_file():
+
     file_to_load = validate_file_name()
 
+    dataframe = None
     dataframe = pd.read_csv(file_to_load)
     dataframe.index = range(1, len(dataframe) + 1)
 
     return dataframe
-
 
 ###########################################################################
 #   Function Name: DISPLAY DATASET SUBMENU
@@ -136,11 +127,11 @@ def load_data_from_file():
 #                    of the main menu
 ###########################################################################
 def display_dataset_submenu(dataframe):
+
     dataset_names = list(dataframe.keys())
     for index, name in enumerate(dataset_names, start=1):
         print("\t{} - {}".format(index, name))
     print()
-
 
 ###########################################################################
 #   Function Name: GET DATASET INDEX
@@ -149,10 +140,10 @@ def display_dataset_submenu(dataframe):
 #                    lists to be able to select current list names in use.
 ###########################################################################
 def get_dataset_index(dataframe):
+
     display_dataset_submenu(dataframe)
     index = menu_input_validation(len(dataframe.keys()))
     return index
-
 
 ###########################################################################
 #   Function Name: ANALYSE DATA SET
@@ -160,6 +151,7 @@ def get_dataset_index(dataframe):
 #                    the data list.
 ###########################################################################
 def analyse_data_set(dataframe, index):
+
     set_names = dataframe.keys()
     set_values = dataframe[str(set_names[index - 1])]
     print("")
@@ -170,7 +162,6 @@ def analyse_data_set(dataframe, index):
     print(f'Standard Deviation:{round(set_values.std(), 2)}')
     print(f'Std.Err of Mean:{round(set_values.sem(), 2)}')
     print("--------------------")
-
 
 ###########################################################################
 #   Function Name: DISPLAY GRAPH TYPE SUBMENU
@@ -184,19 +175,18 @@ def display_graph_type_submenu():
     print('\t2 - Bar Graph')
     print('\t3 - Box Plot')
 
-
 ###########################################################################
 #   Function Name: GET GRAPH LOGIC
 #  function Purpose: This function sets out the logic as to how the
 #                    data will be presented.
 ###########################################################################
-def get_graph_logic():
+def get_graph_logic(dataframe):
     valid_user_decision = False
     while not valid_user_decision:
-        subplot_choice = input(f'\nDo you want all columns of the data presented in subplots (y/n)?')
+        subplot_choice = input(f'\nDo you want all columns of the data presented in a single (y/n)?')
         subplot_choice.lower()
         if subplot_choice == "y" or subplot_choice == "n":
-            if subplot_choice == "y":
+            if subplot_choice == "n":
                 valid_user_decision = True
             else:
                 valid_user_decision = True
@@ -204,16 +194,16 @@ def get_graph_logic():
             print("Error! Type in either 'y' or 'n'.")
     return subplot_choice
 
-
 ###########################################################################
 #   Function Name: PLOT GRAPHICS
 #  function Purpose: This function plots the actual graphs based
 #                    on the logic.
 ###########################################################################
-def plot_graphics(graph_selection, subplot_choice, dataframe):
+def plot_graphics(graph_selection,subplot_choice, dataframe):
+
     if graph_selection == 1:
         if subplot_choice == "y":
-            dataframe.plot.line(subplots=True, layout=(len(dataframe.columns), 1))
+            dataframe.plot.line(subplots = True, layout = (len(dataframe.columns),1))
         else:
             dataframe.plot.line()
     elif graph_selection == 2:
@@ -234,3 +224,5 @@ def plot_graphics(graph_selection, subplot_choice, dataframe):
 ###########################################################################
 
 main()
+
+
