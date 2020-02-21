@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 #   SECONDARY MAIN LINE
 ###########################################################################
 def main():
-    dataframe = []
+    valid_dataframe = []
     data_loaded = False
     select_options_value = 4
     display_menu()
@@ -25,15 +25,15 @@ def main():
         if select_option is not 1 and not data_loaded:
             print(f'\n\t You have not imported a data file yet. Please select option 1:')
         elif select_option == 1:
-            dataframe = load_data_from_file()
+            valid_dataframe = load_data_from_file()
             data_loaded = True
         elif select_option == 2:
             if not data_loaded:
                 print(f'\n\t You have not imported a data file yet. Please select option 1:')
             else:
                 print(f'\n\t Select a dataset to analise: ')
-                index = get_dataset_index(dataframe)
-                analyse_data_set(dataframe, index)
+                index = get_dataset_index(valid_dataframe)
+                analyse_data_set(valid_dataframe, index)
         elif select_option == 3:
             if not data_loaded:
                 print(f'\n\t You have not imported a data file yet. Please select option 1:')
@@ -41,7 +41,7 @@ def main():
                 display_graph_type_submenu()
                 graph_selection = menu_input_validation(3)
                 subplot_choice = get_graph_logic()
-                plot_graphics(graph_selection, subplot_choice, dataframe)
+                plot_graphics(graph_selection, subplot_choice, valid_dataframe)
 
         display_menu()
         select_option = menu_input_validation(select_options_value)
@@ -98,7 +98,8 @@ def validate_file_name():
             print(f'\n\t Filename does not exist or incorrect name, Please re-enter your filename: ')
         else:
             print(f"\nThe file '{file_to_load}' was loaded successfully.")
-            return file_to_load
+            valid_file_to_load = file_to_load
+            return valid_file_to_load
 
 
 ###########################################################################
@@ -109,12 +110,12 @@ def validate_file_name():
 
 
 def load_data_from_file():
-    file_to_load = validate_file_name()
+    valid_file_to_load = validate_file_name()
 
-    dataframe = pd.read_csv(file_to_load)
+    dataframe = pd.read_csv(valid_file_to_load)
     dataframe.index = range(1, len(dataframe) + 1)
-
-    return dataframe
+    valid_dataframe = dataframe
+    return valid_dataframe
 
 
 ###########################################################################
@@ -124,8 +125,8 @@ def load_data_from_file():
 ###########################################################################
 
 
-def display_dataset_submenu(dataframe):
-    dataset_names = list(dataframe.keys())
+def display_dataset_submenu(valid_dataframe):
+    dataset_names = list(valid_dataframe.keys())
     for index, name in enumerate(dataset_names, start=1):
         print(f'\t{index} - {name}')
     print()
@@ -139,9 +140,9 @@ def display_dataset_submenu(dataframe):
 ###########################################################################
 
 
-def get_dataset_index(dataframe):
-    display_dataset_submenu(dataframe)
-    index = menu_input_validation(len(dataframe.keys()))
+def get_dataset_index(valid_dataframe):
+    display_dataset_submenu(valid_dataframe)
+    index = menu_input_validation(len(valid_dataframe.keys()))
     return index
 
 
@@ -152,9 +153,9 @@ def get_dataset_index(dataframe):
 ###########################################################################
 
 
-def analyse_data_set(dataframe, index):
-    set_names = dataframe.keys()
-    set_values = dataframe[str(set_names[index - 1])]
+def analyse_data_set(valid_dataframe, index):
+    set_names = valid_dataframe.keys()
+    set_values = valid_dataframe[str(set_names[index - 1])]
     print("")
     print(f'{set_names[index - 1]}')
     print(f'----------')
@@ -208,22 +209,22 @@ def get_graph_logic():
 ###########################################################################
 
 
-def plot_graphics(graph_selection, subplot_choice, dataframe):
+def plot_graphics(graph_selection, subplot_choice, valid_dataframe):
     if graph_selection == 1:
         if subplot_choice == "y":
-            dataframe.plot.line(subplots=True, layout=(len(dataframe.columns), 1))
+            valid_dataframe.plot.line(subplots=True, layout=(len(valid_dataframe.columns), 1))
         else:
-            dataframe.plot.line()
+            valid_dataframe.plot.line()
     elif graph_selection == 2:
         if subplot_choice == 'y':
-            dataframe.plot.bar(subplots=True, layout=(1, len(dataframe.columns)))
+            valid_dataframe.plot.bar(subplots=True, layout=(1, len(valid_dataframe.columns)))
         else:
-            dataframe.plot.bar()
+            valid_dataframe.plot.bar()
     elif graph_selection == 3:
         if subplot_choice == "y":
-            dataframe.plot.box(subplots=True, layout=(1, len(dataframe.columns)))
+            valid_dataframe.plot.box(subplots=True, layout=(1, len(valid_dataframe.columns)))
         else:
-            dataframe.plot.box()
+            valid_dataframe.plot.box()
     plt.show()
 
 
